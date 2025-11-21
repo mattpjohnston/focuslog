@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1 class="h3 mb-3">
+  {% if course %}Edit course{% else %}New course{% endif %}
+</h1>
+
+{% if error %}
+  <div class="alert alert-danger mb-3">{{ error }}</div>
+{% endif %}
+
+<div class="card p-3">
+  <form
+    action="{% if course %}{{ url_for('course_edit', course_id=course.id) }}{% else %}{{ url_for('course_new') }}{% endif %}"
+    method="post"
+    id="course-form"
+    class="constrained-form-wide"
+  >
+    <div class="mb-3">
+      <label for="name" class="form-label">Course name</label>
+      <input
+        class="form-control"
+        id="name"
+        name="name"
+        required
+        value="{{ course and course.name or '' }}"
+      >
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Description (optional)</label>
+      <textarea
+        class="form-control"
+        id="description"
+        name="description"
+        rows="2"
+      >{{ course and course.description or '' }}</textarea>
+    </div>
+
+    <h2 class="h5 mt-4 mb-2">Planning</h2>
+    <p class="text-muted small mb-3">
+      You can set a total estimated time, or define a number of weeks and
+      a target hours-per-week. The fields will try to update each other
+      automatically when you change them.
+    </p>
+
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label for="target_total_hours" class="form-label">Total hours</label>
+        <input
+          class="form-control"
+          id="target_total_hours"
+          name="target_total_hours"
+          type="number"
+          min="0"
+          step="0.5"
+          value="{{ course and course.target_total_hours or '' }}"
+        >
+      </div>
+      <div class="col-md-4">
+        <label for="target_weeks" class="form-label">Number of weeks</label>
+        <input
+          class="form-control"
+          id="target_weeks"
+          name="target_weeks"
+          type="number"
+          min="1"
+          step="1"
+          value="{{ course and course.target_weeks or '' }}"
+        >
+      </div>
+      <div class="col-md-4">
+        <label for="target_hours_per_week" class="form-label">Hours per week</label>
+        <input
+          class="form-control"
+          id="target_hours_per_week"
+          name="target_hours_per_week"
+          type="number"
+          min="0"
+          step="0.5"
+          value="{{ course and course.target_hours_per_week or '' }}"
+        >
+      </div>
+    </div>
+
+    <div class="mt-4 d-flex gap-2">
+      <button class="btn btn-primary" type="submit">
+        {% if course %}Save changes{% else %}Create course{% endif %}
+      </button>
+      <a class="btn btn-outline-secondary" href="{{ url_for('courses') }}">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

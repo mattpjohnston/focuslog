@@ -1,0 +1,154 @@
+{% extends "layout.html" %}
+{% block body %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a href="{{ url_for('courses') }}">Courses</a>
+    </li>
+    <li class="breadcrumb-item">
+      <a href="{{ url_for('course_detail', course_id=task.course_id) }}">
+        {{ task.course_name }}
+      </a>
+    </li>
+    <li class="breadcrumb-item">
+      <a href="{{ url_for('module_detail', module_id=task.module_id) }}">
+        {{ task.module_name }}
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      {{ task.name }}
+    </li>
+  </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-start mb-3">
+  <div>
+    <h1 class="h3 mb-1">{{ task.name }}</h1>
+    <p class="text-muted mb-2">
+      Type: {{ task.type or "–" }}
+    </p>
+    <div class="d-flex gap-2 align-items-center">
+      {% if task.completed %}
+        <span class="badge-complete">Task complete</span>
+      {% else %}
+        <span class="badge-incomplete">In progress</span>
+      {% endif %}
+      <form
+        action="{{ url_for('task_toggle_complete', task_id=task.id) }}"
+        method="post"
+      >
+        <button class="btn btn-sm btn-outline-secondary" type="submit">
+          {% if task.completed %}Mark as not complete{% else %}Mark as complete{% endif %}
+        </button>
+      </form>
+    </div>
+  </div>
+  <div class="d-flex gap-2">
+    <a
+      class="btn btn-sm btn-outline-secondary"
+      href="{{ url_for('task_edit', task_id=task.id) }}"
+    >
+      Edit
+    </a>
+    <form
+      action="{{ url_for('task_delete', task_id=task.id) }}"
+      method="post"
+      onsubmit="return confirm('Delete this task and its sessions?');"
+    >
+      <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+    </form>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card p-3">
+      <div class="metric-label mb-1">Total time</div>
+      <div class="metric-value">
+        {{ (task_minutes or 0) / 60 | round(1) }} h
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3">
+      <div class="metric-label mb-1">This week</div>
+      <div class="metric-value">
+        {{ (weekly_minutes or 0) / 60 | round(1) }} h
+      </div>
+      <p class="text-muted small mb-0">
+        From {{ start_of_week }} to {{ end_of_week }}.
+      </p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3">
+      <div class="metric-label mb-1">Target</div>
+      <p class="mb-0">
+        {% if task.target_hours %}
+          {{ task.target_hours | round(1) }} h
+        {% else %}
+          <span class="text-muted">No target set.</span>
+        {% endif %}
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <h2 class="h5 mb-0">Sessions</h2>
+  <a
+    class="btn btn-sm btn-primary"
+    href="{{ url_for('session_new') }}?task_id={{ task.id }}"
+  >
+    Log session
+  </a>
+</div>
+
+{% if sessions %}
+  <div class="card p-3">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Duration</th>
+            <th>Notes</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in sessions %}
+            <tr>
+              <td>{{ s.date }}</td>
+              <td>{{ s.start_time }} – {{ s.end_time }}</td>
+              <td>{{ s.duration_minutes }} min</td>
+              <td>{{ s.notes or "" }}</td>
+              <td class="text-end">
+                <a
+                  class="btn btn-sm btn-outline-secondary me-1"
+                  href="{{ url_for('session_edit', session_id=s.id) }}"
+                >
+                  Edit
+                </a>
+            <form
+              action="{{ url_for('session_delete', session_id=s.id) }}"
+              method="post"
+              onsubmit="return confirm('Delete this session?');"
+              class="d-inline"
+            >
+              <button class="btn btn-sm btn-outline-danger" type="submit">
+                Delete
+              </button>
+            </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% else %}
+  <p class="text-muted">No sessions logged yet for this task.</p>
+{% endif %}
+{% endblock %}

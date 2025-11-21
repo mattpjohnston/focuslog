@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Your courses</h1>
+  <a class="btn btn-primary" href="{{ url_for('course_new') }}">New course</a>
+</div>
+
+{% if courses %}
+  <div class="card p-3">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Course</th>
+            <th>Status</th>
+            <th>Total hours</th>
+            <th>Target hours</th>
+            <th>Weekly goal</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in courses %}
+            {% set hours = (c.total_minutes or 0) / 60 %}
+            <tr>
+              <td>
+                <strong>{{ c.name }}</strong>
+                {% if c.description %}
+                  <div class="text-muted small">{{ c.description }}</div>
+                {% endif %}
+              </td>
+              <td>
+                {% if c.completed %}
+                  <span class="badge-complete">Complete</span>
+                {% else %}
+                  <span class="badge-incomplete">In progress</span>
+                {% endif %}
+              </td>
+              <td>{{ hours | round(1) }}</td>
+              <td>
+                {% if c.target_total_hours %}
+                  {{ c.target_total_hours | round(1) }}
+                {% else %}
+                  -
+                {% endif %}
+              </td>
+              <td>
+                {% if c.target_hours_per_week %}
+                  {{ c.target_hours_per_week | round(1) }} h/week
+                {% else %}
+                  -
+                {% endif %}
+              </td>
+              <td class="text-end">
+                <a
+                  class="btn btn-sm btn-outline-secondary"
+                  href="{{ url_for('course_detail', course_id=c.id) }}"
+                >
+                  Open
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% else %}
+  <p class="text-muted">No courses yet. Create your first course to get started.</p>
+{% endif %}
+{% endblock %}

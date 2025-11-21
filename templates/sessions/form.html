@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1 class="h3 mb-3">Log session</h1>
+
+{% if error %}
+  <div class="alert alert-danger mb-3">{{ error }}</div>
+{% endif %}
+
+{% if not tasks %}
+  <p class="text-muted">
+    You don’t have any tasks yet. Create a course, module, and task first.
+  </p>
+{% else %}
+  <div class="card p-3">
+    <form
+      action="{{ url_for('session_new') }}"
+      method="post"
+      class="constrained-form"
+    >
+      <div class="mb-3">
+        <label for="task_id" class="form-label">Task</label>
+        <select class="form-select" id="task_id" name="task_id" required>
+          {% for t in tasks %}
+            <option
+              value="{{ t.id }}"
+              {% if preselected_task_id and t.id == preselected_task_id %}selected{% endif %}
+            >
+              {{ t.course_name }} / {{ t.module_name }} / {{ t.name }}
+              {% if t.type %} ({{ t.type }}){% endif %}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="date" class="form-label">Date</label>
+        <input
+          class="form-control"
+          id="date"
+          name="date"
+          type="date"
+          required
+        >
+      </div>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label for="start_time" class="form-label">Start time</label>
+          <input
+            class="form-control"
+            id="start_time"
+            name="start_time"
+            type="time"
+            required
+          >
+        </div>
+        <div class="col-md-6">
+          <label for="end_time" class="form-label">End time</label>
+          <input
+            class="form-control"
+            id="end_time"
+            name="end_time"
+            type="time"
+            required
+          >
+        </div>
+      </div>
+
+      <div class="mb-3 mt-3">
+        <label for="notes" class="form-label">Notes (optional)</label>
+        <textarea
+          class="form-control"
+          id="notes"
+          name="notes"
+          rows="2"
+        ></textarea>
+      </div>
+
+      <button class="btn btn-primary" type="submit">Save session</button>
+      <a class="btn btn-outline-secondary ms-2" href="{{ url_for('sessions_view') }}">
+        Cancel
+      </a>
+    </form>
+  </div>
+{% endif %}
+{% endblock %}

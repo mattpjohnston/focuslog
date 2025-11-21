@@ -1,0 +1,101 @@
+/* Layout */
+
+body {
+  min-height: 100vh;
+}
+
+main.container {
+  max-width: 1100px;
+}
+
+/* Navbar tweaks */
+
+.navbar {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Cards */
+
+.card {
+  border-radius: 1rem;
+}
+
+/* Tables */
+
+.table {
+  margin-bottom: 0;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.table thead th {
+  border-bottom-width: 1px;
+}
+
+/* Status badges */
+
+.badge-complete {
+  background-color: rgba(40, 167, 69, 0.15);
+  color: #4ade80;
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.badge-incomplete {
+  background-color: rgba(156, 163, 175, 0.2);
+  color: rgba(104, 104, 104);
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Summary metrics */
+
+.metric-label {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.metric-value {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+/* Auth pages (login/register/password) */
+
+.auth-container {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+}
+
+/* Forms */
+
+.form-control,
+.form-select,
+textarea.form-control {
+  border-radius: 0.75rem;
+}
+
+.alert-danger {
+  border-radius: 999px;
+}
+
+/* Breadcrumbs */
+
+.breadcrumb {
+  background-color: transparent;
+  padding-left: 0;
+  margin-bottom: 1rem;
+}

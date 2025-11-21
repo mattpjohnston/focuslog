@@ -1,0 +1,150 @@
+{% extends "layout.html" %}
+{% block body %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a href="{{ url_for('courses') }}">Courses</a>
+    </li>
+    <li class="breadcrumb-item">
+      <a href="{{ url_for('course_detail', course_id=module.course_id) }}">
+        {{ module.course_name }}
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      {{ module.name }}
+    </li>
+  </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-start mb-3">
+  <div>
+    <h1 class="h3 mb-1">{{ module.name }}</h1>
+    <div class="d-flex gap-2 align-items-center">
+      {% if module.completed %}
+        <span class="badge-complete">Module complete</span>
+      {% else %}
+        <span class="badge-incomplete">In progress</span>
+      {% endif %}
+      <form
+        action="{{ url_for('module_toggle_complete', module_id=module.id) }}"
+        method="post"
+        class="d-inline"
+      >
+        <button class="btn btn-sm btn-outline-secondary" type="submit">
+          {% if module.completed %}Mark as not complete{% else %}Mark as complete{% endif %}
+        </button>
+      </form>
+    </div>
+  </div>
+  <div class="d-flex gap-2">
+    <a
+      class="btn btn-sm btn-outline-secondary"
+      href="{{ url_for('module_edit', module_id=module.id) }}"
+    >
+      Edit
+    </a>
+    <form
+      action="{{ url_for('module_delete', module_id=module.id) }}"
+      method="post"
+      onsubmit="return confirm('Delete this module and all tasks/sessions?');"
+    >
+      <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+    </form>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-6">
+    <div class="card p-3">
+      <div class="metric-label mb-1">Total time</div>
+      <div class="metric-value">
+        {{ (module_minutes or 0) / 60 | round(1) }} h
+      </div>
+      <p class="text-muted small mb-0">
+        Across all tasks in this module.
+      </p>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card p-3">
+      <div class="metric-label mb-1">This week</div>
+      <div class="metric-value">
+        {{ (weekly_minutes or 0) / 60 | round(1) }} h
+      </div>
+      <p class="text-muted small mb-0">
+        From {{ start_of_week }} to {{ end_of_week }}.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <h2 class="h5 mb-0">Tasks</h2>
+  <a
+    class="btn btn-sm btn-primary"
+    href="{{ url_for('task_new', module_id=module.id) }}"
+  >
+    Add task
+  </a>
+</div>
+
+{% if tasks %}
+  <div class="card p-3">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Task</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Total hours</th>
+            <th>Target hours</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in tasks %}
+            <tr>
+              <td>{{ t.order_index }}</td>
+              <td>{{ t.name }}</td>
+              <td>{{ t.type or "-" }}</td>
+              <td>
+                {% if t.completed %}
+                  <span class="badge-complete">Complete</span>
+                {% else %}
+                  <span class="badge-incomplete">In progress</span>
+                {% endif %}
+              </td>
+              <td>{{ (t.total_minutes or 0) / 60 | round(1) }}</td>
+              <td>
+                {% if t.target_hours %}
+                  {{ t.target_hours | round(1) }}
+                {% else %}
+                  -
+                {% endif %}
+              </td>
+              <td class="text-end">
+                <a
+                  class="btn btn-sm btn-outline-secondary"
+                  href="{{ url_for('task_detail', task_id=t.id) }}"
+                >
+                  Open
+                </a>
+                <a
+                  class="btn btn-sm btn-outline-primary ms-1"
+                  href="{{ url_for('session_new') }}?task_id={{ t.id }}"
+                >
+                  Log session
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% else %}
+  <p class="text-muted">No tasks yet. Add tasks for lectures, sections, and problem sets.</p>
+{% endif %}
+{% endblock %}

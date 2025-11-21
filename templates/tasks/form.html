@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1 class="h3 mb-3">
+  {% if task %}Edit task{% else %}New task{% endif %}
+</h1>
+
+{% if error %}
+  <div class="alert alert-danger mb-3">{{ error }}</div>
+{% endif %}
+
+<div class="card p-3">
+  <form
+    action="{% if task %}{{ url_for('task_edit', task_id=task.id) }}{% else %}{{ url_for('task_new', module_id=module.id) }}{% endif %}"
+    method="post"
+    class="constrained-form"
+  >
+    <div class="mb-3">
+      <label for="name" class="form-label">Task name</label>
+      <input
+        class="form-control"
+        id="name"
+        name="name"
+        required
+        value="{{ task and task.name or '' }}"
+      >
+    </div>
+    <div class="mb-3">
+      <label for="type" class="form-label">Type (optional)</label>
+      <input
+        class="form-control"
+        id="type"
+        name="type"
+        placeholder="e.g. lecture, section, problem set"
+        value="{{ task and task.type or '' }}"
+      >
+    </div>
+    <div class="mb-4">
+      <label for="target_hours" class="form-label">Target hours (optional)</label>
+      <input
+        class="form-control"
+        id="target_hours"
+        name="target_hours"
+        type="number"
+        min="0"
+        step="0.5"
+        value="{{ task and task.target_hours or '' }}"
+      >
+    </div>
+
+    <div class="d-flex gap-2">
+      <button class="btn btn-primary" type="submit">
+        {% if task %}Save changes{% else %}Create task{% endif %}
+      </button>
+      <a
+        class="btn btn-outline-secondary"
+        href="{{ url_for('module_detail', module_id=module.id) }}"
+      >
+        Cancel
+      </a>
+    </div>
+  </form>
+</div>
+{% endblock %}
