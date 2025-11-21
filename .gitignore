@@ -1,0 +1,22 @@
+# Python bytecode and cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+
+# SQLite database files
+*.db
+*.sqlite3
+
+# Environment / config files
+.env
+.flaskenv
+
+# Editor / OS cruft
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
