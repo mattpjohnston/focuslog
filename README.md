@@ -1,7 +1,5 @@
 # FocusLog
 
-#### Video Demo: https://youtu.be/znmKSZWZpcs?si=MkSKz1gLetU0Jthx
-
 #### Description
 
 FocusLog is a web application I built to bring structure to self-directed studying. I originally designed it for tracking curricula like CS50, The Odin Project, or OSSU, where students navigate weeks, lectures, and problem sets, and a simple to-do list isn’t sufficient to track effort over time.
